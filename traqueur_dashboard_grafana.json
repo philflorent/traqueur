@@ -1,0 +1,3439 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 8,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 43,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "General informations, latency, activity type",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- Information collected 1 hour ago at max",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "hide": false,
+          "rawSql": "with information_panel as (\n(SELECT \n'Collection time : ' ||  to_char(dtcol, 'YYYY/MM/DD HH24:MI:SS') as collection_time,\n'Hostname : ' || cluster_hostname as hostname,\n'Cluster version : '|| cluster_postgres_version as version,\n'Cluster port : '|| cluster_port as port,\n'WAL archiving : '|| cluster_archive_mode as archive_mode,\n'Number of processes : '|| cluster_processes as processes,\n'Shared buffers size : '|| cluster_shared_buffers as shared_buffers,\n'Cluster size : '|| cluster_pretty_size as cluster_size,\n'Databases : '|| cluster_databases as databases,\n'Description : '|| cluster_comment as comment\n from traqueur_cluster_information where $__timeFilter(dtcol) order by dtcol desc fetch first 1 rows only)\n)\nselect unnest(array[collection_time, hostname, comment, version, port, processes, archive_mode, shared_buffers, cluster_size, databases]) as \"Informations\" from information_panel\n",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "Cluster Informations",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Evictions"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Evictions"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 32,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "with haut as (select dtcol, context, read_time, reads, write_time, writes, writeback_time, writebacks, extends, extend_time, fsync_time, fsyncs, evictions, stats_reset  from traqueur_io_stats where dtcol = (select max(dtcol) from traqueur_io_stats where $__timeFilter(dtcol))),\nbas as (select dtcol, context, read_time, reads, write_time, writes, writeback_time, writebacks, extends, extend_time, fsync_time, fsyncs, evictions, stats_reset from traqueur_io_stats where dtcol = (select min(dtcol) from traqueur_io_stats where $__timeFilter(dtcol)))\nselect  haut.context, \ncase when (sum(haut.reads)-sum(bas.reads)) <> 0 then round(((sum(haut.read_time)-sum(bas.read_time))/(sum(haut.reads)-sum(bas.reads)))::numeric,2) else null end \"Reads latency (ms)\", \ncase when (sum(haut.writes)-sum(bas.writes)) <> 0 then round(((sum(haut.write_time)-sum(bas.write_time))/(sum(haut.writes)-sum(bas.writes)))::numeric,2) else null end \"Writes latency (ms)\", \ncase when (sum(haut.writebacks)-sum(bas.writebacks)) <> 0 then round(((sum(haut.writeback_time)-sum(bas.writeback_time))/(sum(haut.writebacks)-sum(bas.writebacks)))::numeric,2) else null end \"Writebacks latency (ms)\", \ncase when (sum(haut.extends)-sum(bas.extends)) <> 0 then round(((sum(haut.extend_time)-sum(bas.extend_time))/(sum(haut.extends)-sum(bas.extends)))::numeric,2) else null end \"Extends latency (ms)\", \ncase when (sum(haut.fsyncs)-sum(bas.fsyncs)) <> 0 then round(((sum(haut.fsync_time)-sum(bas.fsync_time))/(sum(haut.fsyncs)-sum(bas.fsyncs)))::numeric,2) else null end \"Fsyncs latency (ms)\",\n sum(haut.evictions)-sum(bas.evictions)  \"Evictions\"\n from haut join bas on (haut.context = bas.context) \n where haut.stats_reset = bas.stats_reset \n group by haut.context order by haut.context asc;",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "IO latency informations",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 16,
+      "maxDataPoints": 100,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__time(dtcol),\n  100 - pourcentage_cpu as \"non_cpu_activity\"\nFROM\n  traqueur_sessions_actives\nWHERE\n   $__timeFilter(dtcol) and datid is not null\n  \n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "NON CPU activity",
+      "type": "gauge"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 44,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Current activity (pids, applications, queries)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 14,
+        "x": 0,
+        "y": 16
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  dtcol as \"time\",\n  count(*)-1 as \"active processes\"\nFROM\n  traqueur_sessions_actives\nWHERE\n   $__timeFilter(dtcol)\n  group by dtcol\norder by dtcol\n\n  \n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Active sessions *",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 10\n- last completed minute of collection within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pid"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PID"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "detections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pid"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 14,
+        "y": 16
+      },
+      "hideTimeOverride": true,
+      "id": 37,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with collecte_complete(derniere) as (select date_trunc('minute', max(dtcol) - interval '1 minute') from traqueur_sessions_actives where  $__timeFilter(dtcol))\nSELECT datname as \"database\", pid, application, detections from\n(SELECT date_trunc('minute', dtcol) as \"time\", datname, pid, coalesce(application_info->>'program', application_name) as application, count(*) as detections\nFROM traqueur_sessions_actives\nwhere $__timeFilter(dtcol) and date_trunc('minute', dtcol) = (select derniere from collecte_complete) and datid is not null\ngroup by date_trunc('minute', dtcol),  pid, application_info->>'program', application_name, datname\nFETCH FIRST 10 ROWS ONLY) r\norder by detections desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Current PIDs & applications",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 10\n- last completed minute of collection within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "detections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "distinct_exe"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "distinct"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "hideTimeOverride": true,
+      "id": 29,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with collecte_complete(derniere) as (select date_trunc('minute', max(dtcol) - interval '1 minute') from traqueur_sessions_actives where  $__timeFilter(dtcol))\nSELECT datname as \"database\", application, query, detections, distinct_exe from\n(SELECT date_trunc('minute', dtcol) as \"time\", datname, coalesce(application_info->>'program', application_name) as \"application\", coalesce(tquery, query) as \"query\", count(*) as detections, count(distinct query_start) as distinct_exe\nFROM traqueur_sessions_actives\nwhere  $__timeFilter(dtcol) and date_trunc('minute', dtcol) = (select derniere from collecte_complete) and datid is not null\ngroup by date_trunc('minute', dtcol),  coalesce(tquery, query), application_info->>'program', application_name,datname\nFETCH FIRST 10 ROWS ONLY) r\norder by detections desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Current applications & queries",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 10\n- last completed minute of collection within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "detections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pid"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PID"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pid"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "hideTimeOverride": true,
+      "id": 42,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with collecte_complete(derniere) as (select date_trunc('minute', max(dtcol) - interval '1 minute') from traqueur_sessions_actives where $__timeFilter(dtcol))\nSELECT datname as \"database\", pid, query, detections, distinct_exe from\n(SELECT date_trunc('minute', dtcol) as \"time\", datname, pid, coalesce(tquery, query) as \"query\", count(*) as detections, count(distinct query_start) as distinct_exe\nFROM traqueur_sessions_actives\nwhere $__timeFilter(dtcol) and date_trunc('minute', dtcol) = (select derniere from collecte_complete) and datid is not null\ngroup by date_trunc('minute', dtcol),  coalesce(tquery, query), pid, datname\nFETCH FIRST 10 ROWS ONLY) r\norder by detections desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Current PIDs & queries",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "id": 45,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Current waits",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- last completed minute of collection within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 14,
+        "x": 0,
+        "y": 47
+      },
+      "hideTimeOverride": true,
+      "id": 38,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "with collecte_complete(derniere) as (select date_trunc('minute', max(dtcol) - interval '1 minute') from traqueur_sessions_actives where  $__timeFilter(dtcol))\nSELECT time, wait_event_type as \"metric\", detections from\n(SELECT date_trunc('minute', dtcol) as \"time\", coalesce(wait_event_type, 'CPU or ?') as \"wait_event_type\", count(*) as detections\nFROM traqueur_sessions_actives\nWHERE  $__timeFilter(dtcol) and date_trunc('minute', dtcol) = (select derniere from collecte_complete) and datid is not null\ngroup by date_trunc('minute', dtcol),  coalesce(wait_event_type, 'CPU or ?')\nFETCH FIRST 5 ROWS ONLY) r\norder by detections desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Current wait event types",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "total"
+            ]
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 10\n- last completed minute of collection within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 10,
+        "x": 14,
+        "y": 47
+      },
+      "hideTimeOverride": true,
+      "id": 31,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with collecte_complete(derniere) as (select date_trunc('minute', max(dtcol) - interval '1 minute') from traqueur_sessions_actives where  $__timeFilter(dtcol))\nSELECT datname as \"database\", wait_event_type, detections from\n(SELECT datname, date_trunc('minute', dtcol) as \"time\", coalesce(wait_event_type, 'CPU or ?') as \"wait_event_type\", count(*) as detections\nFROM traqueur_sessions_actives\nWHERE  $__timeFilter(dtcol) and date_trunc('minute', dtcol) = (select derniere from collecte_complete) and datid is not null\ngroup by date_trunc('minute', dtcol),  coalesce(wait_event_type, 'CPU or ?'), datname\nFETCH FIRST 10 ROWS ONLY) r\norder by detections desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Current wait event types",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 10\n- last completed minute of collection within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "detections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "wait_event_type"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "distinct_exe"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "distinct"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 58
+      },
+      "hideTimeOverride": true,
+      "id": 22,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with collecte_complete(derniere) as (select date_trunc('minute', max(dtcol) - interval '1 minute') from traqueur_sessions_actives where $__timeFilter(dtcol))\nSELECT datname as \"database\", wait_event_type, query, detections, distinct_exe from\n(SELECT datname, date_trunc('minute', dtcol) as \"time\", coalesce(tquery, query) as \"query\", coalesce(wait_event_type, 'CPU or ?') as \"wait_event_type\", count(*) as detections, count(distinct query_start) as distinct_exe\nFROM traqueur_sessions_actives\nwhere $__timeFilter(dtcol) and date_trunc('minute', dtcol) = (select derniere from collecte_complete) and datid is not null\ngroup by date_trunc('minute', dtcol),  coalesce(tquery, query), coalesce(wait_event_type, 'CPU or ?'), datname\nFETCH FIRST 10 ROWS ONLY) r\norder by detections desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Current wait event types & queries",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      },
+      "id": 46,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Locks : blocked pids & blockers",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "points",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsNull",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 0,
+        "y": 70
+      },
+      "id": 27,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__time(dtcol),\n  count(*) as \"blocked sessions\"\nFROM\n  traqueur_sessions_actives\nWHERE\n$__timeFilter(dtcol) and datid is not null and blockers is not null\n  group by dtcol\norder by dtcol\n\n  \n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Blocked sessions *",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- blocked/blockers by minute within the last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pid"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "pid"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Start time (1m period)"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 14,
+        "x": 10,
+        "y": 70
+      },
+      "id": 28,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "SELECT date_trunc('minute', dtcol) as \"time\", array_agg(distinct pid) as \"blocked pids\",  blockers as blockers from traqueur_sessions_actives where  $__timeFilter(dtcol) and blockers is not null group by time, blockers order by \"time\" desc",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Blocked pids & final blockers",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Start time (1h period max)"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "detections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Detections"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "metric"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "application - query hash value -  query text"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Detections"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "distinct_exe"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "distinct"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_active_sessions"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "average active sessions"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "committed_transactions_by_sec"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "committed transactions per second"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rolled_back_transactions_by_sec"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "rolled back transactions per second"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 79
+      },
+      "hideTimeOverride": false,
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with tentatives(nb) as (select count(*) from traqueur_sessions_actives where $__timeFilter(dtcol) and datid is null),\nstats as (select datname, min(extract (epoch from dtcol)) mindtcol, max(extract (epoch from dtcol)) maxdtcol, min(xact_commit) mincom, min(xact_rollback) minrol, max(xact_commit) maxcom, max(xact_rollback) maxrol from traqueur_cluster_stats where $__timeFilter(dtcol) and not $__timeFilter(stats_reset) group by datname),\ncommitted_transactions as (select (sum(maxcom)-sum(mincom))/(min(maxdtcol)-min(mindtcol)) as committed_transactions_by_sec from stats),\nrolled_back_transactions as (select (sum(maxrol)-sum(minrol))/(min(maxdtcol)-min(mindtcol)) as rolled_back_transactions_by_sec from stats)\nSELECT\n   count(*) as detections, \n   count(distinct query_start) as distinct_exe, \n   (count(*)::real/(select nb from tentatives)) as average_active_sessions, \n   (select committed_transactions_by_sec from committed_transactions) as committed_transactions_by_sec,\n   (select rolled_back_transactions_by_sec from rolled_back_transactions) as rolled_back_transactions_by_sec\nFROM\n  traqueur_sessions_actives\nWHERE\n   $__timeFilter(dtcol) and datid is not null\n\n\n\n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Global charge *",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 83
+      },
+      "id": 47,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Global charge and top queries",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 100",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Start time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "detections"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Detections"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "metric"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "database - application - query hash value -  query text"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Detections"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "distinct"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 84
+      },
+      "hideTimeOverride": false,
+      "id": 41,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   datname || ' - ' || case when length(coalesce(application_info->>'program', application_name , '')) = 0 then '?' else coalesce(application_info->>'program', application_name) end || ' - ' || to_hex(coalesce(itquery, iquery)) || ' - ' || coalesce(tquery, query) as metric, count(*) as detections, count(distinct query_start) as distinct\nFROM\n  traqueur_sessions_actives\nWHERE\n   $__timeFilter(dtcol) and datid is not null\ngroup by metric\norder by detections desc\nfetch first 1000 rows only \n\n\n\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top Queries *",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 89
+      },
+      "id": 48,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Top waits",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- by hour",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Start time (1h period max)"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 90
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "with tsa_agg as (select min(dtcol) as mindtcol, date_trunc('hour', dtcol) as dtrunc, wait_event_type, count(*)  as detections\nFROM\n  traqueur_sessions_actives\nWHERE \n   $__timeFilter(dtcol) and datid is not null\ngroup by dtrunc, wait_event_type)\nselect case when dtrunc  < (select min(mindtcol) from tsa_agg) then (select min(mindtcol) from tsa_agg) else dtrunc end as \"time\", \n       coalesce(wait_event_type, 'CPU or ?') as metric,\n       detections\nfrom tsa_agg\norder by \"time\" desc, detections desc;\n\n\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Top wait event types *",
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 100",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "metric"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Wait event type - wait event"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Detections"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#c15c17"
+                    },
+                    {
+                      "color": "#890f02"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 106
+      },
+      "hideTimeOverride": false,
+      "id": 25,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT coalesce(wait_event_type || ' - ' || wait_event, 'CPU or ?') as metric,\n  count(*) as detections\n  from traqueur_sessions_actives\nwhere $__timeFilter(dtcol) and datid is not null\ngroup by metric\norder by count(*) desc\nFETCH FIRST 100 ROWS ONLY",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top wait events *",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- top 1000",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Detections"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#c15c17"
+                    },
+                    {
+                      "color": "#890f02"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "query"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "query text"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "metric"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "wait event"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "hquery"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "query hash value"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 122
+      },
+      "hideTimeOverride": false,
+      "id": 40,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  datname as \"database\", to_hex(coalesce(itquery, iquery)) as hquery, coalesce(tquery, query) as query, coalesce(wait_event_type || ' - ' || wait_event, 'CPU or ?') as metric,\n  count(*) as detections\n  from traqueur_sessions_actives\nwhere $__timeFilter(dtcol) and datid is not null\ngroup by to_hex(coalesce(itquery, iquery)), coalesce(tquery, query), metric, datname\norder by count(*) desc\nFETCH FIRST 1000 ROWS ONLY",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top queries & wait events *",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 138
+      },
+      "id": 49,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "CPU load & IO waits",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- current cpu load excluding traqueur",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 0,
+        "y": 139
+      },
+      "id": 39,
+      "maxDataPoints": 100,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__time(dtcol),\n  pourcentage_cpu\nFROM\n  traqueur_sessions_actives\nWHERE\n    $__timeFilter(dtcol) and datid is null\norder by dtcol\n\n  \n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "CPU load",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- Last 5 minutes",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 16,
+        "x": 8,
+        "y": 139
+      },
+      "id": 30,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "with vals_deb as (select dtcol, user_traqueur, system_traqueur, idle_traqueur, iowait_traqueur from traqueur_times where dtcol = (select min(dtcol) from traqueur_times where $__timeFilter(dtcol))),\nvals_fin as (select  dtcol, user_traqueur, system_traqueur, idle_traqueur, iowait_traqueur from traqueur_times where dtcol = (select max(dtcol) from traqueur_times where $__timeFilter(dtcol)))\nselect \nvals_fin.dtcol as \"time\",\ngreatest(round(vals_fin.user_traqueur - vals_deb.user_traqueur),0) as \"CPU user time (s)\",\ngreatest(round(vals_fin.system_traqueur - vals_deb.system_traqueur),0) as \"CPU system time (s)\",\nCASE when (select upper(cluster_os_family) from traqueur_cluster_information where cluster_os_family is not null fetch first 1 row only) like '%LINUX%' THEN greatest(round(vals_fin.iowait_traqueur - vals_deb.iowait_traqueur),0) ELSE null END AS \"IO wait (s)\",\ngreatest(round(vals_fin.idle_traqueur - vals_deb.idle_traqueur),0) as \"CPU idle time (s)\"\nfrom vals_deb, vals_fin;\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "CPU activity & IO waits system wide",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "current"
+            ]
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- cpu load excluding traqueur",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 150
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__time(dtcol),\n  pourcentage_cpu as \"CPU load\"\nFROM\n  traqueur_sessions_actives\nWHERE\n   $__timeFilter(dtcol)  and datid is null\norder by dtcol\n  \n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU load *",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- by hour",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Start time (1h period max)"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU_user_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU_user_time (s)"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU_system_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU_system_time (s)"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU_idle_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU_idle_time (s)"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IO_wait"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "IO_wait (s)"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 161
+      },
+      "id": 33,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "table",
+          "rawSql": "with vals_deb as (select min(dtcol) as mindtcol, date_trunc('hour', dtcol) as dtcol_h,  min(user_traqueur) as user_traqueur, min(system_traqueur) as system_traqueur, min(idle_traqueur) as idle_traqueur, min(iowait_traqueur) as iowait_traqueur from traqueur_times where $__timeFilter(dtcol) group by date_trunc('hour', dtcol)),\nvals_fin as (select date_trunc('hour', dtcol)  as dtcol_h, max(user_traqueur) as user_traqueur, max(system_traqueur) as system_traqueur, max(idle_traqueur) as idle_traqueur, max(iowait_traqueur) as iowait_traqueur from traqueur_times where $__timeFilter(dtcol) group by date_trunc('hour', dtcol))\nselect  \ncase when dtcol_h > (select min(vals_deb.mindtcol) from vals_deb) then vals_deb.dtcol_h else vals_deb.mindtcol end as \"time\", \ngreatest(round(vals_fin.user_traqueur - vals_deb.user_traqueur),0) as \"CPU_user_time\",\ngreatest(round(vals_fin.system_traqueur - vals_deb.system_traqueur),0) as \"CPU_system_time\",\nCASE when (select upper(cluster_os_family) from traqueur_cluster_information fetch first 1 row only) like '%LINUX%' THEN greatest(round(vals_fin.iowait_traqueur - vals_deb.iowait_traqueur), 0) ELSE null END AS \"IO_wait\",\ngreatest(round(vals_fin.idle_traqueur - vals_deb.idle_traqueur),0) as \"CPU_idle_time\"\nfrom vals_deb join vals_fin using (dtcol_h) order by \"time\" desc;",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU & IO times *",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "bduawes5qm1oga"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 172
+      },
+      "id": 50,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "bduawes5qm1oga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- sum of memory used by current postgresql active processes excluding traqueur",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decmbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 0,
+        "y": 173
+      },
+      "hideTimeOverride": true,
+      "id": 19,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__time(dtcol),\n  sum(mem)/1024/1024\nFROM\n  traqueur_sessions_actives\nWHERE\n  $__timeFilter(dtcol) and datid is not null\ngroup by dtcol\norder by dtcol desc\nfetch first 1 row only \n\n  \n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "5m",
+      "title": "Memory (MB)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "Total memory used by postgresql active processes, excluding traqueur ones",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 16,
+        "x": 8,
+        "y": 173
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "hide": false,
+          "rawSql": "SELECT\n  $__time(dtcol),\n  sum(mem)/1024/1024 as \"Memory\"\nFROM\n  traqueur_sessions_actives \nWHERE\n    $__timeFilter(dtcol) and datid is not null\n  group by dtcol\norder by dtcol\n\n  \n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory (mb) *",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "- sum of memory swapped by current postgresql active processes, excluding traqueur",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decmbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 0,
+        "y": 184
+      },
+      "id": 18,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__time(dtcol),\n  sum(swapped)/1024/1024\nFROM\n  traqueur_sessions_actives\nWHERE\n  $__timeFilter(dtcol) and datid is not null\ngroup by dtcol\norder by dtcol desc\nfetch first 1 row only ",
+          "refId": "A"
+        }
+      ],
+      "title": "Swapped memory (MB)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource_traqueur}"
+      },
+      "description": "Total swapped memory used by postgresql active processes, excluding traqueur ones",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 16,
+        "x": 8,
+        "y": 184
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource_traqueur}"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__time(dtcol),\n  sum(swapped)/1024/1024 as \"Swapped memory\"\nFROM\n  traqueur_sessions_actives\nWHERE\n  $__timeFilter(dtcol) and datid is not null\n  group by dtcol\norder by dtcol\n\n\n  \n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Swapped memory (mb) *",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "grafana-postgresql-datasource",
+          "value": "bduawes5qm1oga"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "datasource_traqueur",
+        "options": [],
+        "query": "grafana-postgresql-datasource",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now-10s"
+  },
+  "timepicker": {
+    "nowDelay": "10s",
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "1h",
+      "8h"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "traqueur_dashboard",
+  "uid": "000000001",
+  "version": 2,
+  "weekStart": ""
+}
