@@ -9,7 +9,7 @@ umask 077
 
 declare version="9.00.00"
 declare min_pg_version="12"
-declare max_pg_version="17"
+declare max_pg_version="18"
 declare OS=`uname`
 
 if [[ -z ${TRAQUEUR_W+x} ]]; then
@@ -882,7 +882,7 @@ if [[ -z ${plpython_extension} ]] && [[ ${psutil} -eq 1 ]]; then
 fi
 
 information "${info_014_postgres_version}"${postgres_version}
-if [[ ${postgres_version} -lt 120000 ]] || [[  ${postgres_version} -ge 180000 ]]; then
+if [[ ${postgres_version} -lt 120000 ]] || [[  ${postgres_version} -ge 190000 ]]; then
 	warning "${warning_003_postgres_version}"							
 fi
 if [[ ${postgres_version} -lt 160000 ]] && [[  ${pg_latence} -eq 1 ]]; then
