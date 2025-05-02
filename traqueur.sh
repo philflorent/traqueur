@@ -1,13 +1,13 @@
 #!/bin/bash
-#	P.Florent 09/08/2024 - https://pgphil.ovh - Traqueur v8.00.01 pour PostgreSQL 12 => 17
-# Copyright (c) 2017-2024, PHILIPPE FLORENT
+#	P.Florent 05/02/2025 - https://pgphil.ovh - Traqueur v9.00.00 pour PostgreSQL 12 => 18
+# Copyright (c) 2017-2025, PHILIPPE FLORENT
 # Permission to use, copy, modify, and distribute this software and its documentation for any purpose, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and this paragraph and the following two paragraphs appear in all copies.
 # IN NO EVENT SHALL PHILIPPE FLORENT BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF PHILIPPE FLORENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # PHILIPPE FLORENT SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND PHILIPPE FLORENT HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 umask 077
 
-declare version="8.00.01"
+declare version="9.00.00"
 declare min_pg_version="12"
 declare max_pg_version="17"
 declare OS=`uname`
@@ -1276,7 +1276,7 @@ create_table_traqueur_sessions_actives(){
 	if [[ ${partitionnement} -eq 1 ]]; then
 		s "create or replace temporary view vue_traqueur_sessions_actives as select current_timestamp as dtcol, *, 0::integer as iquery, query as tquery, 0::integer as itquery, null::tsvector as dquery,null::integer[] as blockers, 0::float as pourcentage_cpu, 0::bigint as mem, 0::bigint as swapped, null::jsonb as application_info "
 		s "from pg_catalog.pg_stat_activity;"
-		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_sessions_actives (LIKE vue_traqueur_sessions_actives) partition by range(dtcol);"
+		s "create ${table_persistence} table if not exists traqueur_sessions_actives (LIKE vue_traqueur_sessions_actives) partition by range(dtcol);"
 	else
 		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_sessions_actives as select current_timestamp as dtcol, *, 0::integer as iquery, query as tquery, 0::integer as itquery, null::tsvector as dquery,null::integer[] as blockers, 0::float as pourcentage_cpu, 0::bigint as mem, 0::bigint as swapped, null::jsonb as application_info "
 		s "from pg_catalog.pg_stat_activity with no data;"		
@@ -1306,7 +1306,7 @@ create_table_traqueur_sessions_actives(){
 create_table_traqueur_cluster_information(){	
 	
 	if [[ ${partitionnement} -eq 1 ]]; then
-		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_cluster_information(dtcol timestamp with time zone, cluster_hostname varchar, cluster_os_family varchar, cluster_postgres_version varchar, cluster_port varchar, cluster_archive_mode varchar, cluster_size bigint, cluster_pretty_size varchar, cluster_shared_buffers varchar, cluster_processes integer, cluster_databases varchar, cluster_comment varchar) partition by range(dtcol);"
+		s "create ${table_persistence} table if not exists traqueur_cluster_information(dtcol timestamp with time zone, cluster_hostname varchar, cluster_os_family varchar, cluster_postgres_version varchar, cluster_port varchar, cluster_archive_mode varchar, cluster_size bigint, cluster_pretty_size varchar, cluster_shared_buffers varchar, cluster_processes integer, cluster_databases varchar, cluster_comment varchar) partition by range(dtcol);"
 	else
 		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_cluster_information(dtcol timestamp with time zone, cluster_hostname varchar, cluster_os_family varchar, cluster_postgres_version varchar, cluster_port varchar, cluster_archive_mode varchar, cluster_size bigint, cluster_pretty_size varchar, cluster_shared_buffers varchar, cluster_processes integer, cluster_databases varchar, cluster_comment varchar);"
 	fi
@@ -1323,7 +1323,7 @@ create_table_traqueur_cluster_stats(){
 	if [[ ${partitionnement} -eq 1 ]]; then
 		s "create or replace temporary view vue_traqueur_cluster_stats as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_stat_database;"
-		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_cluster_stats (LIKE vue_traqueur_cluster_stats) partition by range(dtcol);"
+		s "create ${table_persistence} table if not exists traqueur_cluster_stats (LIKE vue_traqueur_cluster_stats) partition by range(dtcol);"
 	else
 		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_cluster_stats as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_stat_database with no data;"	
@@ -1341,7 +1341,7 @@ create_table_traqueur_io_stats(){
 	if [[ ${partitionnement} -eq 1 ]]; then
 		s "create or replace temporary view vue_traqueur_io_stats as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_stat_io;"
-		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_io_stats (LIKE vue_traqueur_io_stats) partition by range(dtcol);"
+		s "create ${table_persistence} table if not exists traqueur_io_stats (LIKE vue_traqueur_io_stats) partition by range(dtcol);"
 	else
 		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_io_stats as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_stat_io with no data;"	
@@ -1359,7 +1359,7 @@ create_table_traqueur_bloqueurs_process(){
 	if [[ ${partitionnement} -eq 1 ]]; then
 		s "create or replace temporary view vue_traqueur_bloqueurs_process as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_stat_activity;"
-		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_bloqueurs_process (LIKE vue_traqueur_bloqueurs_process) partition by range(dtcol);"
+		s "create ${table_persistence}  table if not exists traqueur_bloqueurs_process (LIKE vue_traqueur_bloqueurs_process) partition by range(dtcol);"
 	else
 		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_bloqueurs_process as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_stat_activity with no data;"
@@ -1377,7 +1377,7 @@ create_table_traqueur_bloqueurs_transactions(){
 	if [[ ${partitionnement} -eq 1 ]]; then
 		s "create or replace temporary view vue_traqueur_bloqueurs_transactions as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_prepared_xacts;"
-		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_bloqueurs_transactions (LIKE vue_traqueur_bloqueurs_transactions) partition by range(dtcol);"
+		s "create ${table_persistence} table if not exists traqueur_bloqueurs_transactions (LIKE vue_traqueur_bloqueurs_transactions) partition by range(dtcol);"
 	else 
 		s "create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_bloqueurs_transactions as select current_timestamp as dtcol, * "
 		s "from pg_catalog.pg_prepared_xacts with no data;"
@@ -1403,11 +1403,12 @@ create_table_traqueur_times(){
 	s "\$BODY\$"
 	s "DECLARE"
 	s "create_table character varying;"
-	s "BEGIN"
-	s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_times(),'scputimes',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_times'|| colonnes "
+	s "BEGIN"	
 	if [[ ${partitionnement} -eq 1 ]]; then
+	   s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_times(),'scputimes',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} table if not exists traqueur_times'|| colonnes "
 		s "	|| ' partition by range(dtcol);' from liste_colonnes INTO create_table;"
 	else 
+	    s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_times(),'scputimes',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_times'|| colonnes "
 		s "	|| ';' from liste_colonnes INTO create_table;"
 	fi
 	s "EXECUTE (create_table);"
@@ -1429,10 +1430,11 @@ create_table_traqueur_virtual_memory(){
 	s "DECLARE"
 	s "create_table character varying;"
 	s "BEGIN"
-	s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_virtual_memory(),'svmem',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_virtual_memory'|| colonnes "
 	if [[ ${partitionnement} -eq 1 ]]; then
-		s "	|| ' partition by range(dtcol);' from liste_colonnes INTO create_table;"
+	    s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_virtual_memory(),'svmem',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} table if not exists traqueur_virtual_memory'|| colonnes "
+	  	s "	|| ' partition by range(dtcol);' from liste_colonnes INTO create_table;"
 	else 
+	    s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_virtual_memory(),'svmem',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_virtual_memory'|| colonnes "
 		s "	|| ';' from liste_colonnes INTO create_table;"
 	fi
 	s "EXECUTE (create_table);"
@@ -1454,10 +1456,11 @@ create_table_traqueur_swap_memory(){
 	s "DECLARE"
 	s "create_table character varying;"
 	s "BEGIN"
-	s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_swap_memory(),'sswap',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_swap_memory'|| colonnes "
 	if [[ ${partitionnement} -eq 1 ]]; then
+	    s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_swap_memory(),'sswap',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} table if not exists traqueur_swap_memory'|| colonnes "
 		s "	|| ' partition by range(dtcol);' from liste_colonnes INTO create_table;"
 	else 
+	     s "with liste_colonnes as (select replace(replace(replace(regexp_replace(replace(pg_temp.traqueur_swap_memory(),'sswap',''),'=(\d*\.?\d*)','','g'),',','_traqueur float, '),')','_traqueur float)'),'(','(dtcol timestamp with time zone, ') as colonnes) select 'create ${table_persistence} ${table_journalisation_mode} table if not exists traqueur_swap_memory'|| colonnes "
 		s "	|| ';' from liste_colonnes INTO create_table;"
 	fi
 	s "EXECUTE (create_table);"
@@ -1835,7 +1838,7 @@ if [[ ${change_journalisation_mode} -eq 1 ]]; then
     s "c.relname ~ '^(traqueur_*)'"
     s "AND pg_catalog.pg_table_is_visible(c.oid)"
     s "AND n.nspname = current_schema"
-    s "AND c.relkind in ('r','p');"
+    s "AND c.relkind in ('r');"
     s "traqueur_table_partition record;"
     s "alter_traqueur_table_partition_ddl character varying;"
     s "BEGIN"
