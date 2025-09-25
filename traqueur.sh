@@ -1,5 +1,5 @@
 #!/bin/bash
-#	P.Florent 05/02/2025 - https://pgphil.ovh - Traqueur v9.00.00 pour PostgreSQL 12 => 18
+#	P.Florent 25/09/2025 - https://pgphil.ovh - Traqueur v9.00.01 pour PostgreSQL 12 => 18
 # Copyright (c) 2017-2025, PHILIPPE FLORENT
 # Permission to use, copy, modify, and distribute this software and its documentation for any purpose, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and this paragraph and the following two paragraphs appear in all copies.
 # IN NO EVENT SHALL PHILIPPE FLORENT BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF PHILIPPE FLORENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -7,7 +7,7 @@
 
 umask 077
 
-declare version="9.00.00"
+declare version="9.00.01"
 declare min_pg_version="12"
 declare max_pg_version="18"
 declare OS=`uname`
@@ -1206,14 +1206,14 @@ create_procedure_function_traqueur_collection(){
 		s ", blocking_transactions as (select * from pg_prepared_xacts where transaction in (select transactionid from pg_locks where transactionid is not null and virtualtransaction in (select virtualtransaction from blockers)))"	
 		s "insert into traqueur_bloqueurs_transactions select embedded_transaction_timestamp, * from blocking_transactions;"
 	fi
-	if [[ ${pg_sleep_intervalle_ms} -ne 0 ]]; then		
-		s "perform CASE WHEN clock_timestamp() - embedded_transaction_timestamp < INTERVAL '${pg_sleep_intervalle_ms} millisecond' THEN (SELECT true FROM pg_sleep_for(INTERVAL '	${pg_sleep_intervalle_ms} millisecond'-(clock_timestamp() - embedded_transaction_timestamp))) ELSE false END;"		
-	fi
 	if [[ $1 -eq 1 ]]; then
 		s "commit;"
 	else
 		s "perform pg_stat_clear_snapshot();"
 	fi	
+	if [[ ${pg_sleep_intervalle_ms} -ne 0 ]]; then		
+		s "perform CASE WHEN clock_timestamp() - embedded_transaction_timestamp < INTERVAL '${pg_sleep_intervalle_ms} millisecond' THEN (SELECT true FROM pg_sleep_for(INTERVAL '	${pg_sleep_intervalle_ms} millisecond'-(clock_timestamp() - embedded_transaction_timestamp))) ELSE false END;"		
+	fi
 	s "end loop;"
 	if [[ ${stop_collection} -eq 1 ]]; then
 		if [[ ${mode_batch} -eq 0 ]]; then
@@ -1241,10 +1241,10 @@ anonymous_traqueur_collection(){
 	s ", null::tsvector as dquery,null::integer[] as blockers, 0::float as pourcentage_cpu, 0::bigint as mem, 0::bigint as swapped, null::jsonb as application_info "
 	s "FROM pg_catalog.pg_stat_activity where state  = 'active' AND pid != pg_backend_pid() ${pids_list})"	
 	s " TO PROGRAM 'cat >> ${dossier_fichiers_plats}/traqueur_sessions_actives.txt';"
+	s "commit;"
 	if [[ ${pg_sleep_intervalle_ms} -ne 0 ]]; then		
 		s "perform CASE WHEN clock_timestamp() - embedded_transaction_timestamp < INTERVAL '${pg_sleep_intervalle_ms} millisecond' THEN (SELECT true FROM pg_sleep_for(INTERVAL '	${pg_sleep_intervalle_ms} millisecond'-(clock_timestamp() - embedded_transaction_timestamp))) ELSE false END;"		
 	fi
-	s "commit;"
 	s "end loop;"
 	s "END"
 	s "\$\$"
