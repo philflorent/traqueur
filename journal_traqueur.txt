@@ -1,5 +1,5 @@
 #	P.Florent 23/09/2025 - traqueur pour PostgreSQL v9.00.01
-Optimisation mineure : commit avant pg_sleep() au lieu de commit apres pg_sleep() dans  traqueur_collection pour reduire drastiquement la durée des transactions du traqueur en mode batch
+Optimisation mineure : commit avant pg_sleep() au lieu de commit apres pg_sleep() dans  traqueur_collection pour reduire drastiquement la duree des transactions du traqueur en mode batch
 
 #	P.Florent 02/05/2025 - traqueur pour PostgreSQL v9.00.00
 Compatibilite : tests basiques avec PostgreSQL 18 devel
