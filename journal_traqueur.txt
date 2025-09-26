@@ -1,0 +1,488 @@
+#	P.Florent 23/09/2025 - traqueur pour PostgreSQL v9.00.01
+Optimisation mineure : commit avant pg_sleep() au lieu de commit apres pg_sleep() dans  traqueur_collection pour reduire drastiquement la durée des transactions du traqueur en mode batch
+
+#	P.Florent 02/05/2025 - traqueur pour PostgreSQL v9.00.00
+Compatibilite : tests basiques avec PostgreSQL 18 devel
+Compatibilite : adaptation au commit e2bab2d792044b55dd092bf1c2be0d570ccb9401
+
+#	P.Florent 09/08/2024 - traqueur pour PostgreSQL v8.00.01
+Correction de bug : erreur dans la fonction usage concernant l'option -b (i au lieu de iterations)
+Compatibilite : adaptations pour la prochaine version du traqueur dashboard grafana incluant un panel sur la latence
+
+#	P.Florent 26/07/2024 - traqueur pour PostgreSQL v8.00.00
+Compatibilite : tests basiques avec PostgreSQL 17 beta2
+
+#	P.Florent 21/12/2023 - traqueur pour PostgreSQL v7.01.02
+Correction de bug : en mode batch, lorsque l'option de partitionnement -j est utilise, l'argument U de -b  passant les tables en mode de journalisation UNLOGGED n'etait pas pris en compte sur les partitions, ce qui entrainait en fait une journalisation sur toutes les donnees collectees (ce sont les partitions qui contiennent les donnees). Pour corriger le probleme sur une installation existante,  utiliser une fois -e U pour passer les partitions deja creees en UNLOGGED (c'est facultatif, les nouvelles partitions creees avec un traqueur en 7.1.2 ou version superieure seront bien creees avec le mode de journalisation unlogged et les anciennes seront eliminees si vous effectuez une rotation via -m)
+
+#	P.Florent 19/12/2023 - traqueur pour PostgreSQL v7.01.01
+Correction de bug : dans les rapports produits avec -r , les donnees sur la consommation memoire introduites par la 7.1.0 n'etaient pas filtrees en fonction de la periode d'analyse choisie
+
+#	P.Florent 18/12/2023 - traqueur pour PostgreSQL v7.01.00
+Correction de bug mineur : la colonne guest_nice_traqueur (inutilisee par defaut) de traqueur_times etait mal nommee, si vous utilisez le traqueur en mode batch (option -b), utiliser l'option -z pour detruire/recreer le repository avant de relancer le traqueur en mode batch avec vos options habituelles
+Ajout de fonctionnalite : collecte et affichage des informations  sur l'occupation memoire, l'occupation du swap et la memoire swappee lorsque -p est utilise. Il faut redemarrer le traqueur si vous l'utilisez en mode batch avant de produire de nouveau rapports avec -r, de nouvelles tables ayant ete introduites
+
+#	P.Florent 13/11/2023 - traqueur pour PostgreSQL v7.00.02
+Compatibilite : arret du support de PostgreSQL 11
+
+#	P.Florent 03/11/2023 - traqueur pour PostgreSQL v7.00.01
+Correction de bug : ";" manquant dans un test if - &&, regression introduite en 7.00.00 concernant la nouvelle fonctionnalite de calcul de la latence I/O avec PostgreSQL 16 et >, bug remonte par msouviron 
+Modification de fonctionnalite mineure : les informations generales et de latence sont maintenante ecrites lors de la derniere iteration de la collecte en mode batch (option -b)
+Correction de bug : message d'erreur incorrect lors d'une erreur de saisie de l'argument de l'option -b 
+
+#	P.Florent 01/09/2023 - traqueur pour PostgreSQL v7.00.00
+Compatibilite : tests basiques avec PostgreSQL 16 RC1
+Ajout de fonctionnalite : option -l permettant d'afficher la latence I/O  en interactif et dans les rapports avec PostgreSQL 16, track_io_timing=on necessaire
+
+#	P.Florent 12/04/2023 - traqueur pour PostgreSQL v6.01.03
+Correction de bug mineur : statement_timeout=0 pour eviter que le traqueur soit tue si ce parametre est positionne au niveau du cluster
+
+#	P.Florent 18/02/2023 - traqueur pour PostgreSQL v6.01.02
+Modification de fonctionnalite mineure : exclusion  par defaut de l'activite de walsender dans les rapports produits avec l'option -r
+
+#	P.Florent 28/01/2023 - traqueur pour PostgreSQL v6.01.01
+Correction de bug : utilisation de convert_to plutot que la conversion directe en bytea pour generer un identifiant des requetes, certaines requetes generaient "invalid input syntax for type bytea" (bug introduit en 6.1.0)
+
+#	P.Florent 10/01/2023 - traqueur pour PostgreSQL v6.01.00
+Modification de fonctionnalite mineure: utilisation de query_id de pg_stat_activity pour generer itquery si query_id n'est pas nulle avec PostgreSQL 14 et version superieure
+Modification de fonctionnalite mineure : utilisation de la fonction sha256 au lieu de la fonction md5 pour generer iquery et itquery
+
+#	P.Florent 20/12/2022 - traqueur pour PostgreSQL v6.00.02
+Compatibilite : arret du support de PostgreSQL 10
+
+#	P.Florent 16/11/2021 - traqueur pour PostgreSQL v6.00.01
+Compatibilite : arret du support de PostgreSQL 9.6
+
+#	P.Florent 18/09/2021 - traqueur pour PostgreSQL v6.00.00
+Compatibilite : premiers tests basiques effectues avec PostgreSQL 15 devel
+
+#	P.Florent 21/02/2021 - traqueur pour PostgreSQL v5.01.01
+Compatibilite : arret du support de PostgreSQL 9.5
+
+#	P.Florent 01/12/2020 - traqueur pour PostgreSQL v5.01.00
+Ajout de fonctionnalite mineure : le nombre de detections non paralleles est ajoute dans les rapports produits avec l'option -r avec postgresql 13 et versions superieures afin de determiner l'elapsed de chaque requete (le tri est toujours fait selon les detections)
+
+#	P.Florent 30/11/2020 - traqueur pour PostgreSQL v5.00.01
+Correction de bug : test de la disponibilite et du nom de l'extension plpython (plpythonu ou plpython3u), l'option -p etait inutilisable avec postgresql 12 et versions superieures
+
+#	P.Florent 19/10/2020 - traqueur pour PostgreSQL v5.00.00
+Compatibilite : premiers tests basiques effectues avec PostgreSQL 14 devel
+
+#	P.Florent 22/09/2020 - traqueur pour PostgreSQL v4.02.03
+Correction de bug : ne plus creer l'extension plpythonu avec -r si -p n'est pas utilise
+
+#	P.Florent 10/02/2020 - traqueur pour PostgreSQL v4.02.02
+Correction de bug mineur : warning plutot qu'erreur si l'extension bloom n'est pas disponible (mais il est recommande qu'elle le soit...)
+
+#	P.Florent 05/02/2020 - traqueur pour PostgreSQL v4.02.01
+Compatibilite : arret du support de PostgreSQL 9.4
+
+#	P.Florent 27/09/2019 - traqueur pour PostgreSQL v4.02.00
+Modification de fonctionnalite : tous les tests de performance sont maintenant lances avec une unique option -t au lieu de -a et -l. L'option -a N est remplacee par -t N. L'option -t est remplacee par -a t. L'option -l est remplacee par -t 5. L'option -x est remplaceee par -a x. Les options -t -x combinees sont remplacees par -a tx.
+
+#	P.Florent 19/08/2019 - traqueur pour PostgreSQL v4.01.02
+Correction de bug mineur : messages d'informations imprecis lorsqu'une connexion est effectuee par defaut vers la base traqueur, il est possible que l'option -c ait ete utilisee
+
+#	P.Florent 18/08/2019 - traqueur pour PostgreSQL v4.01.01
+Correction de bug : certaines tables n'etaient pas affectees par l'option -e en mode non partitionne, elimination des instructions directes "alter table" pour tout gerer avec un curseur, ce sont de toute facon les tables ordinaires et partitions (relkind r) qui sont logged ou unlogged et pas les tables partitionnees (relkind p)
+
+#	P.Florent 03/08/2019 - traqueur pour PostgreSQL v4.01.00
+Modification de fonctionnalite mineure : utilisation de la valeur hexadecimale plutot que la valeur decimale pour iquery et itquery dans les rapports. En interactif avec l'option -o, il est suggere aussi d'utiliser les valeurs hexadecimales meme si ce n'est bien sur pas obligatoire. Des colonnes generees virtuelles hquery, htquery mais aussi nquery et hnquery seront ajoutees a la table traqueur_sessions_actives lorsque la fonctionnalite sera disponible (jusque PostgreSQL 11, les colonnes generees ne sont pas disponibles, PostgreSQL 12 propose des colonnes generees stockees)
+Modification de fonctionnalite mineure : les rapports du traqueur (option -r) sont maintenant produits dans $TRAQUEUR_W (/tmp par defaut) plutot que dans le dossier courant
+
+#	P.Florent 10/07/2019 - traqueur pour PostgreSQL v4.00.00
+Compatibilite : premiers tests basiques effectues avec PostgreSQL 13 devel
+
+#	P.Florent 15/05/2019 - traqueur pour PostgreSQL v3.04.04
+Correction de bug mineur : l'option -K tentait de supprimer les fichiers traqueur.* dans le dossier de travail meme lorsque l'extension n'etait pas un pid (e.g traqueur.sh)
+
+#	P.Florent 13/05/2019 - traqueur pour PostgreSQL v3.04.03
+Optimisation : suppression d'un sleep 1 inutile avec l'option -K
+ 
+#	P.Florent 12/05/2019 - traqueur pour PostgreSQL v3.04.02
+Modification de fonctionnalite mineure : plus d'argument pour l'option -K qui supprime maintenant tous les fichiers de travail obsoletes
+
+#	P.Florent 07/05/2019 - traqueur pour PostgreSQL v3.04.01
+Modification de fonctionnalite mineure : ecriture des informations generales (option -g) des la 1ere iteration en mode batch
+
+#	P.Florent 07/05/2019 - traqueur pour PostgreSQL v3.04.00
+Ajout de fonctionnalite mineure : ajout de l'option -K permettant d'interrompre le traqueur lorsqu'il tourne en mode batch, option utilisable pour definir un execstoppost de systemd
+
+#	P.Florent 15/04/2019 - traqueur pour PostgreSQL v3.03.02
+Correction de bug : le filtrage par defaut des rapports produits avec l'option -r etait incorrect avec PostgreSQL 9.6 et versions inferieures, la colonne backend_type n'existant pas dans pg_stat_activity avant PostgreSQL 10 (regression introduite en 3.02.00)
+
+#	P.Florent 22/03/2019 - traqueur pour PostgreSQL v3.03.01
+Correction de bug : utilisation de l'option -P (format de sortie POSIX) pour la verification d'espace via df au lieu de (mal) gerer les differentes plateformes
+Modification de fonctionnalite mineure : plus de sortie du programme avec l'option -m
+
+#	P.Florent 07/01/2019 - traqueur pour PostgreSQL v3.03.00
+Ajout de fonctionnalite : ajout de l'option -k permettant d'interrompre la traque prematurement si les collectes ne remontent rien N fois
+
+#	P.Florent 18/11/2018 - traqueur pour PostgreSQL v3.02.02
+Modification de fonctionnalite mineure : remplacement de /var/lib/postgresql/10/main par /var/lib/postgresql/11/main comme valeur par defaut de $PGDATA
+
+#	P.Florent 08/11/2018 - traqueur pour PostgreSQL v3.02.01
+Correction de bug : le filtrage ne s'appliquait pas sur le dbtime affiche dans les rapports produits par -r -p, le dbtime etait surevalue
+
+#	P.Florent 26/10/2018 - traqueur pour PostgreSQL v3.02.00
+Correction de bug : l'option -y ne fonctionnait pas avec PostgreSQL 9.4
+Modification de fonctionnalite mineure : les detections d'autovacuum sont maintenant filtrees par defaut dans les rapports produits avec l'option -r
+Ajout de fonctionnalite : traque possible sur les hot standby, introduction des options -b H (stockage des informations dans un fichier plat), -H (dossier du fichier plat), -L (chargement du fichier plat dans un repository)
+Ajout de fonctionnalite mineure : les rapport produits avec les options -r et -p donnent mainteant le temps horloge (elapsed time) et le temps base de donnees (db time) 
+Divers : utilisation d'un bloc anonyme base sur pg_stat_clear_snapshot() en mode interactif afin de reduire la taille du fichier de travail
+
+#	P.Florent 08/10/2018 - traqueur pour PostgreSQL v3.01.02
+Modification de fonctionnalite mineure : ajout d'un test CPU, l'option -a prend maintenant l'argument 4 (calcul de 1000 decimales de pi, utile pour tester des configurations tres anciennes ou encore la vitesse d'un navigateur avec l'emulation javascript d'un linux par fabrice bellard)
+
+#	P.Florent 30/09/2018 - traqueur pour PostgreSQL v3.01.01
+Modification de fonctionnalite mineure : ajout d'un test CPU, l'option -a prend maintenant l'argument 3 (calcul de 80000 decimales de pi avec un code un peu different)
+
+#	P.Florent 29/09/2018 - traqueur pour PostgreSQL v3.01.00
+Ajout de fonctionnalite mineure : ajout d'un test CPU, l'option -a prend maintenant pour argument 1 (calcul d'un grand nombre premier) ou 2 (calcul de 40000 decimales de pi)
+
+#	P.Florent 18/09/2018 - traqueur pour PostgreSQL v3.00.02
+Correction de bug mineur : la fonction usage() evoquait toujours /var/lib/postgresql/9.6/main comme valeur par defaut de $PGDATA alors que la valeur par defaut est /var/lib/postgresql/10/main depuis la version 2.05.02
+
+#	P.Florent 17/09/2018 - traqueur pour PostgreSQL v3.00.01
+Correction de bug : regression de la version 3.00.00, le mode batch (option -b) n'etait plus utilisable avec postgresql 10- en raison d'une variable mal nommee
+
+#	P.Florent 15/09/2018 - traqueur pour PostgreSQL v3.00.00
+Compatibilite : premiers tests basiques effectues avec PostgreSQL 12 devel, arret du support de PostgreSQL 9.3
+Modification de fonctionnalite mineure : lorsque l'option -c est utilisee et que la base n'est pas precisee mais qu'une base dediee au traqueur existe, utilisation de cette base
+Ajout de fonctionnalite : option -y ajoutant une colonne application_info au format jsonb renseignee depuis application_name si celle-ci est au format programme,module,action,informations_clientes,travail_effectue,travail_restant (6 champs separes par 5 virgules)
+Note : si vous utilisiez le traqueur en mode batch, il est necessaire de detruire le repository avant d'utiliser cette version 
+
+#	P.Florent 06/09/2018 - traqueur pour PostgreSQL v2.05.03
+Correction de bug mineur : messages d'erreur incorrects ou mal traduits
+
+#	P.Florent 30/08/2018 - traqueur pour PostgreSQL v2.05.02
+Correction de bug mineur : presence de caracteres parasites dans les messages d'aide
+Correction de bug mineur : les messages de sortie des options -a et -l n'etaient pas traduits en anglais
+Modification de fonctionnalite mineure : utilisation par defaut de /var/lib/postgresql/10/main plutot que /var/lib/postgresql/9.6/main pour $PGDATA
+
+#	P.Florent 20/08/2018 - traqueur pour PostgreSQL v2.05.01
+Correction de bug : impossible d'executer le traqueur avec l'option -g sur un cluster postgresql 9.5 ou 9.6
+
+#	P.Florent 05/07/2018 - traqueur pour PostgreSQL v2.05.00
+Modification de fonctionnalite : lors de l'utilisation de l'option -p, affichage des maxima des sommes de consommations memoire et swap en interactif et dans les rapports produits avec l'option -r
+
+#	P.Florent 04/07/2018 - traqueur pour PostgreSQL v2.04.08
+Correction de bug : impossible d'executer le traqueur avec PostgreSQL 9.5 et 9.6, les fonctions brin_summarize_new_values etaient appelees sur des index inexistants depuis la 2.04.03
+
+#	P.Florent 02/07/2018 - traqueur pour PostgreSQL v2.04.07
+Correction de bug mineur : inutile d'utiliser un associative array pour le tableau des listes de colonnes de option -o, remplacement de declare -A par declare -a 
+
+#	P.Florent 28/06/2018 - traqueur pour PostgreSQL v2.04.06
+Correction de bug mineur : presence de caracteres parasites dans les messages d'aide
+
+#	P.Florent 26/06/2018 - traqueur pour PostgreSQL v2.04.05
+Modification de fonctionnalite mineure : l'option -l fait mainteant un test bonnie++ avec un peu plus de donnees afin d'affiner le resultat, cela ne change cependant pas la philosophie de l'option qui est destinee a detecter rapidement des problemes majeurs et pas a donner une vision conforme a la realite
+
+#	P.Florent 17/06/2018 - traqueur pour PostgreSQL v2.04.04
+Divers : remplacement des multiples ouvertures/fermetures de transactions par l'utilisation d'une procedure avec PostgreSQL 11 afin de reduire de maniere drastique le temps de creation et la taille du fichier de travail 
+Correction de bug mineur : modification des explications concernant l'option -d
+
+#	P.Florent 16/06/2018 - traqueur pour PostgreSQL v2.04.03
+Modification de fonctionnalite mineure : suppression de dtcol_epoch_utc pour privilegier l'utilisation directe de dtcol, il n'est plus necessaire d'utiliser dtcol_epoch_utc pour obtenir des performances correctes avec le traqueur dashboard depuis grafana 5.1. Si vous utilisez ce traqueur dashboard, il doit etre en version 0.02.01+
+Note : si vous utilisiez le traqueur en mode batch, il est necessaire de detruire le repository avant d'utiliser cette version 
+
+#	P.Florent 09/05/2018 - traqueur pour PostgreSQL v2.04.02
+Modification de fonctionnalite mineure : filtrage par defaut sur les evenements d'attente "idle" (Timeout, Activity) avec PostgreSQL 10 et versions superieures, il est toujours possible de les obtenir en jouant sur l'option -w
+
+#	P.Florent 04/03/2018 - traqueur pour PostgreSQL v2.04.01
+Securite : l'option -r permettant de produire des rapports est maintenant utilisable sans etre superuser sous reserve que les donnees aient ete produites en mode batch avec l'option -g
+
+#	P.Florent 04/03/2018 - traqueur pour PostgreSQL v2.04.00
+Securite : ajout de l'option -q role permettant de creer un role utilisable en interactif en remplacement d'un superuser avec PostgreSQL 10 et versions superieures
+Correction de bug : ajout de privileges de connexion aux utilisateurs crees par l'option -C afin qu'ils puissent operer meme avec une base dont tous les privileges publics sont revoques
+Note : la 2.04.00 a implique de grosses modifications et necessite des tests approfondis, remonter l'information via le forum en cas de bug.
+
+#	P.Florent 03/03/2018 - traqueur pour PostgreSQL v2.03.03
+Securite : correctif concernant la faille CVE-2018-1058, suppression de public dans les search_path utilises par le traqueur et creation des extensions (hors plpythonu qui doit etre creee dans pg_catalog) dans le schema traqueur (ou $TRAQUEUR_EXTENSIONS_SCHEMA si cette variable d'environnement est positionnee)
+Divers : possibilite de donner un nom different de traqueur a la base de travail dediee via la variable d'environnement $TRAQUEUR_DATABASE
+Divers : en mode batch, un warning est emis si le nom du role connecte est different du nom du schema de travail local et que la base de donnee n'est pas appelee traqueur (ou $TRAQUEUR_DATABASE si cette variable d'environnement est positionnee) 
+
+#	P.Florent 23/01/2018 - traqueur pour PostgreSQL v2.03.02
+Divers : utilisation d'une nouveaute de postgres 11, la creation des index locaux sur les partitions peut etre effectuee automatiquement en les definissant au niveau de la table principale 
+
+#	P.Florent 14/01/2018 - traqueur pour PostgreSQL v2.03.01
+Divers : ajout 2018 au niveau de la licence 
+
+#	P.Florent 22/12/2017 - traqueur pour PostgreSQL v2.03.00
+Correction de bug mineur : l'index BRIN traqueur_cluster_stats_br2 ne recevait pas de summarize en versions 9.5 et 9.6
+Ajout de fonctionnalite : introduction de l'option -u permettant de collecter les informations sur les bloqueurs (process et transactions preparees) en mode batch
+Divers : elimination de redondances dans le code par creation de fonctions
+
+#	P.Florent 20/12/2017 - traqueur pour PostgreSQL v2.02.01
+Divers : elimination de redondances dans le code par creation de fonctions
+
+#	P.Florent 19/12/2017 - traqueur pour PostgreSQL v2.02.00
+Correction de bug : l'option -b F ne fonctionnait pas avec un cluster PostgreSQL de version < 9.4 
+Correction de bug : l'agent cree avec le repository par l'option -C n'avait pas son path positionne
+Modification de fonctionnalite : l'option -C de creation du repository necessite maintenant un argument, L pour que les tables soient creees en mode logged, U pour que les tables soient creees en mode unlogged 
+
+#	P.Florent 18/12/2017 - traqueur pour PostgreSQL v2.01.01
+Correction de bug : ajout de -X aux appels psql pour eviter les problemes avec les .psqlrc personnalises
+Correction de bug : la creation directe de tables logged avec -b L etait impossible, erreur de syntaxe sur le create table (regression introduite en 0.12.00)
+
+#	P.Florent 25/11/2017 - traqueur pour PostgreSQL v2.01.00
+Ajout de fonctionnalite : possibilite de stocker les informations de traque produites en mode batch dans un cluster different du cluster de celui sur lequel est execute le traqueur via Postgres FDW
+Ajout de fonctionnalite mineure : ajout du numero de port dans la table traqueur_cluster_information
+
+#	P.Florent 18/11/2017 - traqueur pour PostgreSQL v2.00.00
+Compatibilite : premiers tests basiques effectues avec PostgreSQL 11 devel
+
+#	P.Florent 05/11/2017 - traqueur pour PostgreSQL v1.02.00
+Ajout de fonctionnalite mineure : possibilite de partitionner les tables creees en mode batch avec l'option -j, cette option -j peut etre combinee avec l'option -b mais aussi l'option -m qui supprime alors des partitions completes au lieu de supprimer des lignes 
+
+#	P.Florent 03/11/2017 - traqueur pour PostgreSQL v1.01.00
+Correction de bug mineur : la colonne dtcol de traqueur_times etait creee en timestamp alors que la colonne dtcol de traqueur_sessions_actives etait cree en timestamp with tz. A present les colonnes dtcol sont toutes creees en timestamp with tz
+Performance : en mode interactif, avec l'option -p, la fonction traqueur_insert_times est maintenant lancee 2 fois au lieu d'etre lancee N fois
+Performance : utilisation de la propriete autosummarize des index BRIN en version 10+ plutot que de realiser des summarize manuels
+Modification de fonctionnalite mineure : possibilite d'annuler le sommeil entre 2 interrogations de pg_stat_activity en mode interactif avec -s 0 (consommation importante de ressources, pas recommande sauf cas particulier)
+Modification de fonctionnalite mineure : stockage des informations memoire et swap en octets plutot qu'en mo, remplacement des colonnes mem_en_mo et swapped_en_mo par mem et swapped, la fonction pg_size_pretty est a present utilisee pour afficher les resultats en mode interactif et dans les rapports
+Modification de fonctionnalite mineure : en mode batch, option -b, creation des tables du traqueur dans un schema traqueur plutot que de les creer dans le schema par defaut. Attention, il vous faut prendre en compte ce changement si vous faites du reporting sur les tables du traqueur
+Ajout de fonctionnalite : option -g, collecte d'informations generales stockees dans une table traqueur_cluster_information et de statistiques stockees dans une table traqueur_cluster_stats. Creation d'une table traqueur_cluster_bench pour renseigner des resultats de benchmark manuellement (cette derniere table n'est pas purgee par l'option -m)
+Ajout de fonctionnalite mineure : ajout d'une colonne dtcol_epoch_utc (extraction de l'epoch utc de dtcol) aux tables traqueur_sessions_actives et traqueur_times pour faciliter le reporting via grafana
+
+#	P.Florent 19/10/2017 - traqueur pour PostgreSQL v1.00.01
+Correction de bug : dans les rapports produits par l'option -r, les top requetes et evenements n'etaient pas correctement tries
+
+#	P.Florent 06/10/2017 - traqueur pour PostgreSQL v1.00.00
+Fin de la beta
+
+#	P.Florent 01/10/2017 - traqueur pour PostgreSQL v0.12.07
+Performance et optimisation d'espace : l'option -m avec l'argument 0 tronque maintenant les tables (truncate) au lieu d'effectuer un delete 
+
+#	P.Florent 01/10/2017 - traqueur pour PostgreSQL v0.12.06
+Correction de bug mineur : remplacement de ko par k dans les messages d'erreur concernant le manque d'espace de travail
+
+#	P.Florent 01/10/2017 - traqueur pour PostgreSQL v0.12.05
+Performance : determination directe de l'existence d'une base traqueur plutot que de boucler sur la liste des bases en bash
+
+#	P.Florent 01/10/2017 - traqueur pour PostgreSQL v0.12.04
+Correction de bug mineur : aucun warning n'etait emis si la base de travail n'etait pas appelee traqueur
+Modification de fonctionnalite mineure : allegement de la presentation des rapports produits avec l'option -r
+
+#	P.Florent 30/09/2017 - traqueur pour PostgreSQL v0.12.03
+Correction de bug mineur : certains noms de colonnes n'etaient pas traduits en anglais
+
+#	P.Florent 30/09/2017 - traqueur pour PostgreSQL v0.12.02
+Modification de fonctionnalite mineure : messages en anglais lorsque la variable LANG ne commence pas par fr*
+Modification de fonctionnalite mineure : possibilite d'utiliser 0 comme option de -d pour realiser une seule requete sur l'activite du cluster
+Modification de fonctionnalite mineure : suppression de "and" dans le filtre par defaut de l'option -r
+Correction de bug : l'option -r necessite depuis la 0.11.00 l'extension plpythonu qui n'etait pas creee par defaut
+Correction de bug : option -r, application systematique d'un filtrage pour les sections top evenements et top requetes eliminant les lignes temoins obtenues lors de chaque collecte meme lorsqu'aucune activite n'est detectee 
+
+#	P.Florent 29/09/2017 - traqueur pour PostgreSQL v0.12.01
+Performance : suppression des executions de traqueur_brin_summarize en version 9.4 et inferieures plutot que de les remplacer par "select null"  
+Correction de bug mineur : la valeur par defaut n'etait pas indiquee pour l'option -v
+
+#	P.Florent 29/09/2017 - traqueur pour PostgreSQL v0.12.00
+Compatibilite : backport du traqueur pour les versions 9.3, 9.4 et 9.5 de PostgreSQL, le traqueur sera a present compatible avec toutes les versions de PostgreSQL supportees par la communaute (la 9.2 est en fin de vie, elle a ete testee pour un usage basique mais ne fonctionne pas avec l'option -p en raison de l'absence de fonctions JSON)
+Ajout de fonctionnalite mineure : possibilite de limiter la recherche recursive des bloqueurs finaux avec l'option -i
+Modification de fonctionnalite : possibilite de faire une seule iteration sur pg_stat_activity et pg_locks lors de la collecte en utilisant 0 comme argument pour l'option -d
+
+#	P.Florent 08/09/2017 - traqueur pour PostgreSQL v0.11.01
+Correction de bug mineur : creation d'une fonction plpython traqueur_system() plutot que d'utiliser la fonction version() pour determiner la famille d'os, version() est ok pour "linux" mais sur une plateforme windows le retour ne contient pas "windows" par exemple et pourrait poser probleme dans de futures versions
+
+#	P.Florent 07/09/2017 - traqueur pour PostgreSQL v0.11.00
+Ajout de fonctionnalite : possibilite d'utiliser plusieurs fois l'option -o afin d'analyser l'activite collectee selon differents point de vue en une seule execution du traqueur
+Correction de bug : erreur avec l'option -p lorsque le traqueur etait lance depuis une plateforme non-Linux afin d'analyser l'activite d'un cluster PostgreSQL tournant sous Linux 
+Correction de bug mineur : le nom du serveur d'execution du traqueur etait indique dans les rapports produits par l'option -r au lieu du nom du serveur executant le cluster PostgreSQL
+
+#	P.Florent 02/09/2017 - traqueur pour PostgreSQL v0.10.05
+Correction de bug mineur : la valeur par defaut n'etait pas indiquee pour l'option -d
+
+#	P.Florent 31/08/2017 - traqueur pour PostgreSQL v0.10.04
+Correction de bug mineur : precision sur la presence de 0 dans la liste des blockers (option -o)
+
+#	P.Florent 25/08/2017 - traqueur pour PostgreSQL v0.10.03
+Bonnes pratiques : utilisation du type jsonb en remplacement de hstore en retour de la fonction traqueur_cpu_pid, l'extension hstore_plpythonu n'est donc plus necessaire (plpythonu est toujours necessaire)
+Performance : arret de l'iteration si un pid bloque est deja bloque directement par un top bloqueur dans la requete hierarchique ramenant les top bloqueurs / bloques
+Correction de bug : prise en compte des transactions preparees dans l'affichage des bloqueurs finaux. Pour etre coherent avec la fonction pg_blocking_pids une transaction preparee bloquante est indiquee par 0. Attention, si plusieurs transactions preparees sont bloquantes un seul 0 est affiche dans le tableau du traqueur alors que le tableau retourne par pg_blocking_pids comprend un 0 par transaction preparee bloquante
+
+#	P.Florent 24/07/2017 - traqueur pour PostgreSQL v0.10.02
+Correction de bug mineur : precision sur l'option -t dans l'aide
+
+#	P.Florent 23/07/2017 - traqueur pour PostgreSQL v0.10.01
+Correction de bug mineur : modfication du message d'information en mode batch (option -b), les resultats etaient encore annonces comme affiches alors qu'ils ne le sont plus depuis la 0.09.05
+
+#	P.Florent 23/07/2017 - traqueur pour PostgreSQL v0.10.00
+Ajout/modification de fonctionnalite : possibilite de choisir le mode de journalisation des tables creees en mode batch, l'option -b necessite a present un argument U (unlogged) ou L (logged). Possibilite de changer le mode de journalisation a posteriori avec l'option -e qui prend egalement pour arguments U ou L. 
+
+#	P.Florent 21/07/2017 - traqueur pour PostgreSQL v0.09.05
+Performance  : amelioration des performances lorsque de nombreuses sessions sont actives simultanement (doit etre OK jusque 1000 sesssions), les informations memoire ne sont plus systematiquement reevaluees meme en mode batch, resume (summarization) sur l'index brin traqueur_sessions_actives_br1 toutes les 100 insertions dans traqueur_sessions_actives 
+Optimisation espace : stockage des informations memoire dans des colonnes de type int plutot que bigint
+Correction de bug mineur : la requete d'affichage des resultats etait executee inutilement en mode batch
+Correction de bug mineur : les pourcentages d'occupation cpu negatifs sont a present consideres comme etant egaux a 0
+
+#	P.Florent 18/07/2017 - traqueur pour PostgreSQL v0.09.04
+Correction de bug : l'option -w n'etait plus prise en compte depuis la 0.8.00
+
+#	P.Florent 14/07/2017 - traqueur pour PostgreSQL v0.09.03
+Correction de bug mineur : probleme d'echappement de \$ pour le message d'aide de l'option -a
+Correction de bug mineur : explication plus precise dans les messages d'aide sur le role des variables $PGDATA et $TRAQUEUR_W pour les options -l et -a
+
+#	P.Florent 12/07/2017 - traqueur pour PostgreSQL v0.09.02
+Correction de bug mineur : annulation de la modification de la 0.9.01, retour au code 1 si une commande n'est pas trouvee afin d'eviter les confusions (127 uniquement si le traqueur lui-meme n'est pas trouve)
+Correction de bug : utilisation de la fin du nombre premier genere par l'option -a pour determiner les echecs plutot que de tester le code retour, en effet parfois le programme sort en 60 alors que tout est OK 
+
+#	P.Florent 11/07/2017 - traqueur pour PostgreSQL v0.09.01
+Correction de bug mineur : sortie avec le code d'erreur 127 plutot que le code 1 lorsqu'une des commandes gcc, bonnie++, psql n'est pas trouvee 
+
+#	P.Florent 10/07/2017 - traqueur pour PostgreSQL v0.09.00 
+Correction de bug mineur : le traqueur sortait sans erreur (code retour 0) meme en cas de probleme lors de l'execution de bonnie++ avec l'option -l
+Ajout de fonctionnalite : option -a permettant de tester la performance cpu/ram, necessite gcc et une execution du traqueur depuis le serveur postgresql
+
+#	P.Florent 09/07/2017 - traqueur pour PostgreSQL v0.08.02 
+Correction de bug mineur : le texte de la colonne query devant etre indexe etant du SQL (mots cles en anglais), utilisation de "english" pour constituer le tsvector dquery
+
+#	P.Florent 09/07/2017 - traqueur pour PostgreSQL v0.08.01 
+Correction de bug : regression introduite par la 0.8.00, certaines informations systeme (option -p) n'etaient plus collectees
+
+#	P.Florent 09/07/2017 - traqueur pour PostgreSQL v0.08.00
+Correction de bug : remplacement de blocker (processus bloquant) par blockers (liste de processus bloquants finaux) afin d'ameliorer l'interet de cette information et empecher qu'une detection de verrouillage pour un process ne donne plusieurs lignes lors de la collecte
+Ajout de fonctionnalite : ajout d'une option -f renseignant une colonne dquery permettant d'appliquer du filtrage full text sur les donnees de query lors de la production des rapports 
+Note : la 0.8.00 a implique de grosses modifications et necessite des tests approfondis, remonter l'information via le forum en cas de bug.
+
+#	P.Florent 05/07/2017 - traqueur pour PostgreSQL v0.07.01
+Optimisation espace : plus de copie inutile de query dans la colonne tquery de traqueur_sessions_actives lorsque l'option -n n'est pas utilisee
+
+#	P.Florent 02/07/2017 - traqueur pour PostgreSQL v0.07.00
+Ajout de fonctionnalite : ajout d'une valeur entiere (pas 100% unique mais ce n'est pas utile) permettant d'identifier plus facilement une requete dans la table traqueur_sessions_actives, les rapports etc.
+
+#	P.Florent 01/07/2017 - traqueur pour PostgreSQL v0.06.02
+Correction de bug mineur : creation des fonctions liees au traqueur dans le schema temporaire afin notamment de ne plus gerer leur destruction, les seuls elements visibles d'autres sessions doivent etre les tables (lorsque le mode batch est utilise)
+Correction de bug mineur : creation dynamique de l'index bloom sur toutes les colonnes integer et text de traqueur_sessions_actives afin de gerer automatiquement les futures evolutions de pg_stat_activity
+
+#	P.Florent 21/06/2017 - traqueur pour PostgreSQL v0.06.01
+Correction de bug mineur : en mode interactif (sans l'option -b), la traque ne collecte plus qu'une fois les informations memoire par process pour ameliorer la performance. ces valeurs collectÃ©es sont maintenant reportees lors de chaque nouvelle detection du meme process afin de rendre plus comprehensible l'affichage des resultats. 
+
+#	P.Florent 17/06/2017 - traqueur pour PostgreSQL v0.06.00
+Performance : optimisation de la collecte des informations memoire avec l'option -p, suppression d'une fonction. en mode interactif, les informations ne sont plus collectees qu'une fois par session de traque  
+Performance : ajout d'un index bloom sur la table traqueur_sessions_actives
+Performance : remplacement du type numeric par le type float pour le pourcentage cpu dans la table traqueur_sessions_actives
+Modification de fonctionnalite : ajout de work_event_type dans la liste de colonnes par defaut affichees en interactif, il faut noter que les informations fournies par les colonnes work_event et work_event_type sont de plus en plus riches au fil des versions de PostgreSQL
+Ajout de fonctionnalite : ajout du top evenements (work_event_type) et suppression du nombre de blocages detectes dans les rapports obtenus avec l'option -r 
+
+#	P.Florent 27/04/2017 - traqueur pour PostgreSQL v0.05.19
+Correction de bug mineur : les informations concernant les top requetes dans le rapport n'incluaient pas la base de donnee et l'utilisateur 
+
+#	P.Florent 19/04/2017 - traqueur pour PostgreSQL v0.05.18
+Correction de bug : affectation de log_statement sur none pour eviter de tracer les commandes SQL du traqueur 
+
+#	P.Florent 16/04/2017 - traqueur pour PostgreSQL v0.05.17
+Correction de bug : correction qui aurait due etre incluse depuis la 0.05.14, suppression d'une utilisation inutile de grep -E, l'option -E n'etant de plus pas compatible avec certaines versions de grep
+Correction de bug : modification d'une utilisation de sed pour compatibilite avec solaris (erreur LABEL TOO LONG)
+
+#	P.Florent 16/04/2017 - traqueur pour PostgreSQL v0.05.16
+Correction de bug : remplacement de echo par printf lorsqu'il y a ambiguite en raison du comportement non constant de echo selon les implementations  
+
+#	P.Florent 16/04/2017 - traqueur pour PostgreSQL v0.05.15
+Correction de bug : suppression d'une utilisation inutile de grep -E, l'option -E n'etant de plus pas compatible avec certaines versions de grep
+
+#	P.Florent 16/04/2017 - traqueur pour PostgreSQL v0.05.14
+Correction de bug : modification des fins de ligne, format Unix au lieu de DOS
+
+#	P.Florent 02/04/2017 - traqueur pour PostgreSQL v0.05.13
+Correction de bug : l'option -z ne supprime pas les tables si la configuration par defaut de psql a AUTOCOMMIT off
+
+#	P.Florent 02/04/2017 - traqueur pour PostgreSQL v0.05.12
+Correction de bug mineur : le traqueur ouvre/ferme explicitement les transactions donc utilisation de \set AUTOCOMMIT on au debut du script sql pour eviter un warning sur les transactions deja ouvertes 
+
+#	P.Florent 02/04/2017 - traqueur pour PostgreSQL v0.05.11
+Correction de bug : remplacement de grep -o | wc -l par une commande awk, l'option -o est boguee ou absente sur certaines plateformes 
+
+#	P.Florent 27/03/2017 - traqueur pour PostgreSQL v0.05.10
+Correction de bug : prise en compte de la nouvelle structure de pg_stat_activity avec PostgreSQL 10 (1 colonne en plus). 
+Note, passez le traqueur avec l'option -z ou mieux supprimer/recreer la base traqueur en cas de probleme avec cette version si vous avez utilise les versions precedentes
+
+#	P.Florent 31/01/2017 - traqueur pour PostgreSQL v0.05.09.96
+Divers : ajout d'une licence type PostgreSQL au traqueur
+
+#	P.Florent 20/12/2016 - traqueur pour PostgreSQL v0.05.08.96
+Correction de bug : suppression des DELETE entrainant une consommation excessive de ressources avec l'option -b. Introduction en remplacement de l'option -m pour faire le menage dans les tables unlogged.
+
+#	P.Florent 20/12/2016 - traqueur pour PostgreSQL v0.05.07.96
+Correction de bug : l'option -o ne provoque plus d'erreur si une fonction comportant plusieurs parametres est appliquee sur les colonnes
+
+#	P.Florent 19/12/2016 - traqueur pour PostgreSQL v0.05.06.96
+Correction de bug : erreur avec l'option -p lorsque la consommation memoire d'un process depassait 2Go (limite du type INTEGER atteinte). 
+
+#	P.Florent 18/12/2016 - traqueur pour PostgreSQL v0.05.05.96
+Correction de bug : reprise de la version originale de normalize_query non boguee (remplacement des valeurs numeriques par 0, des valeurs chaines par '' et des listes par (...)) pour la fonction traqueur_normalize_query utilisee avec -n 
+
+#	P.Florent 18/12/2016 - traqueur pour PostgreSQL v0.05.04.96
+Correction de bug : le controle de l'espace libre n'etait pas effectue avec l'option -z 
+
+#	P.Florent 17/12/2016 - traqueur pour PostgreSQL v0.05.03.96
+Correction de bug : controle de l'espace libre avant de lancer le test bonnie++ (option -l) et de creer les scripts sql de travail  
+
+#	P.Florent 16/12/2016 - traqueur pour PostgreSQL v0.05.02.96
+Correction de bug : rapport produit avec l'option -r, le filtre etait applique sur de mauvaises sections du rapport (borne inferieure, borne superieure et blocages au lieu de l'appliquer uniquement sur le top requetes et applications)
+
+#	P.Florent 15/12/2016 - traqueur pour PostgreSQL v0.05.01.96
+Note : gel des fonctionnalites pour demarrage des tests
+
+#	P.Florent 14/12/2016 - traqueur pour PostgreSQL v0.05.00.96
+Modification de fonctionnalite : modification du rapport obtenu avec l'option -r et possibilite de le produire en mode batch en renseignant des variables
+Modification de fonctionnalite : ajout d'une colonne dans l'affichage des resultats (nombre d'executions distinctes par rapport au nombre de detections)
+Ajout de fonctionnalite : ajout de l'option -s permettant de regler le delai de sommeil entre 2 interrogations de pg_stat_activity
+
+#	P.Florent 13/12/2016 - traqueur pour PostgreSQL v0.04.03.96
+Correction de bug : suppression de l'option -s basee sur pg_stat_statements
+
+#	P.Florent 13/12/2016 - traqueur pour PostgreSQL v0.04.02.96
+Correction de bug : la fonction traqueur_mem_pid etait utilisee pour collecter la memoire swappee par process au lieu de traqueur_swap_pid
+Correction de bug : le fichier de travail n'etait pas detruit avec les options -r et -z
+Correction de bug : l'option -s ne fonctionnait plus suite au changement du nom de la table sessions_actives en traqueur_sessions_actives
+Modification de fonctionnalite : affichage du nombre de blocages par verrous detectes dans les rapports, ajout des informations CPU/memoire pour les top requetes et top applications si -p est utilise
+Modification de fonctionnalite : utilisation de ? au lieu de 0 pour remplacer les litteraux et modification de la gestion des listes dans traqueur_normalize_query (coherence avec pg_stat_statements), suppression de query_to_compare (redondance avec -n)
+Modification de fonctionnalite : appel de psql avec l'option --quiet pour la collecte des informations et l'affichage des resultats
+Modification de fonctionnalite : creation par defaut de l'extension pg_stat_statements par l'option -s (note : elle n'est pas detruite par un -0)
+
+#	P.Florent 12/12/2016 - traqueur pour PostgreSQL v0.04.01.96
+Correction de bug : verification des arguments numeriques de la ligne de commande
+Modification de fonctionnalite : remplacement de -0 par -z pour la suppression des elements du traqueur en base
+Modification de fonctionnalite : modification de l'ordre d'execution du script et de prise en compte des options pour mieux refleter les phases CONFIGURATION GENERALE DU SCRIPT / ACTIONS SPECIALES UNIQUES / COLLECTE D'INFORMATIONS / AFFICHAGE DES RESULTATS DE LA COLLECTE
+Modification de fonctionnalite : modification du nom de d'affichage de la colonne application_name de program vers application lors de la presentation des resultats 
+
+#	P.Florent 12/12/2016 - traqueur pour PostgreSQL v0.04.00.96 
+Modification de fonctionnalite : creation par defaut de l'extension hstore_plpythonu par l'option -p (note : elle n'est pas detruite par un -0)
+Modification de fonctionnalite : connexion par defaut sur la base "traqueur" si elle existe
+Ajout de fonctionnalite : option -r permettant de produire des rapports sur les donnees enregistrees en mode batch
+
+#	P.Florent 11/12/2016 - traqueur pour PostgreSQL v0.03.00.96 
+Modification de fonctionnalite : affichage des temps CPU (et d'attente I/O sous Linux) avec l'option -p
+Ajout de fonctionnalite : option -b permettant de travailler en mode batch (frequence de collecte 100 X inferieure, duree d'execution minimale du script exprimee en jours et plus en secondes)
+Ajout de fonctionnalite : option -0 permettant de supprimer les elements en base lies aux differentes versions du traqueur
+Ajout de fonctionnalite : option -t permettant d'activer le timing de psql au cours de l'execution du traqueur
+Ajout de fonctionnalite : option -v permettant de choisir la verbosite de la partie shell
+
+#	P.Florent 11/12/2016 - traqueur pour PostgreSQL v0.02.00.96 
+Correction de bug : erreur python si un process est termine pendant l'execution de traqueur_cpu_pid lors de l'utilisation de -p
+Ajout de fonctionnalite : option -n permettant de normaliser les requetes, remplacement des valeurs litterales par la constante 0 (origine du code de normalize_query : pgbadger)
+
+#	P.Florent 10/12/2016 - traqueur pour PostgreSQL v0.01.00.96 
+Correction de bug : erreur python avec 0 session active lors de l'utilisation de -p
+Modification de fonctionnalite : affichage de la charge CPU moyenne globale avec l'option -p
+Ajout de fonctionnalite : option -l permettant de tester la latence, necessite bonnie++ et une execution du traqueur depuis le serveur postgresql
+
+#	P.Florent 06/12/2016 - traqueur pour PostgreSQL v0.00.01.96 
+Version initiale
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
