@@ -1,5 +1,5 @@
 #!/bin/bash
-#	P.Florent 25/09/2025 - https://pgphil.ovh - Traqueur v9.00.01 pour PostgreSQL 12 => 18
+#	P.Florent 01/11/2025 - https://pgphil.ovh - Traqueur v9.00.02 pour PostgreSQL 13 => 18
 # Copyright (c) 2017-2025, PHILIPPE FLORENT
 # Permission to use, copy, modify, and distribute this software and its documentation for any purpose, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and this paragraph and the following two paragraphs appear in all copies.
 # IN NO EVENT SHALL PHILIPPE FLORENT BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF PHILIPPE FLORENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -7,8 +7,8 @@
 
 umask 077
 
-declare version="9.00.01"
-declare min_pg_version="12"
+declare version="9.00.02"
+declare min_pg_version="13"
 declare max_pg_version="18"
 declare OS=`uname`
 
@@ -882,7 +882,7 @@ if [[ -z ${plpython_extension} ]] && [[ ${psutil} -eq 1 ]]; then
 fi
 
 information "${info_014_postgres_version}"${postgres_version}
-if [[ ${postgres_version} -lt 120000 ]] || [[  ${postgres_version} -ge 190000 ]]; then
+if [[ ${postgres_version} -lt 130000 ]] || [[  ${postgres_version} -ge 190000 ]]; then
 	warning "${warning_003_postgres_version}"							
 fi
 if [[ ${postgres_version} -lt 160000 ]] && [[  ${pg_latence} -eq 1 ]]; then
@@ -1799,9 +1799,7 @@ if [[ ${rapport} -eq 1 ]]; then
 	
 	s "\echo - Top ${TRAQUEUR_RAPPORT_TOP_N} ${report_011_requetes} -"
 	s "select datname as \"${report_014_base_de_donnees}\", usename as \"${report_015_utilisateur}\", to_hex(coalesce(itquery, iquery)) as \"${report_016_identifiant_requete}\", coalesce(tquery, query) as \"${report_017_requete}\", application_name as \"${report_018_application}\", count(*) as \"${report_013_nombre_de_detections}\""
-	if [[ ${postgres_version} -ge 130000 ]]; then		
-		s ", count(*) filter (where leader_pid is null) as \"${report_026_nombre_detections_nonparalleles}\""
-	fi
+	s ", count(*) filter (where leader_pid is null) as \"${report_026_nombre_detections_nonparalleles}\""
 	s ", count(distinct(query_start)) as \"${report_019_nombre_executions_distinctes}\" "
 	if [[ ${psutil} -eq 1 ]]; then
 		s ", greatest(round(100-avg(pourcentage_cpu)),0) as \"${report_020_pourcentage_moyen_non_CPU}\", pg_size_pretty(pg_temp.maxsumbydtcol(row_to_json(row(dtcol, mem)) order by dtcol)) as \"${report_021_max_conso_memoire}\", pg_size_pretty(pg_temp.maxsumbydtcol(row_to_json(row(dtcol, swapped)) order by dtcol)) as \"${report_022_max_conso_swap}\""

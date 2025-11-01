@@ -1,3 +1,6 @@
+#	P.Florent 01/11/2025 - traqueur pour PostgreSQL v9.00.02
+Compatibilite : arret du support de PostgreSQL 12
+
 #	P.Florent 23/09/2025 - traqueur pour PostgreSQL v9.00.01
 Optimisation mineure : commit avant pg_sleep() au lieu de commit apres pg_sleep() dans  traqueur_collection pour reduire drastiquement la duree des transactions du traqueur en mode batch
 
