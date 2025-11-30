@@ -448,7 +448,7 @@ del_work_files(){
 }
 
 del_bellard_files(){
-	#rm -f ${TRAQUEUR_W}/traqueur_bellard_*_${process_number}.c
+	rm -f ${TRAQUEUR_W}/traqueur_bellard_*_${process_number}.c
 	rm -f ${TRAQUEUR_W}/traqueur_bellard_*_${process_number}
 }
 
