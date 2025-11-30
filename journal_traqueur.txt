@@ -1,3 +1,6 @@
+#	P.Florent 30/11/2025 - traqueur pour PostgreSQL v9.00.03
+Compatibilite / correction de bug : le code du test effectue avec -t 1 ne fonctionnait plus sous Debian 13  (gcc 14)
+
 #	P.Florent 01/11/2025 - traqueur pour PostgreSQL v9.00.02
 Compatibilite : arret du support de PostgreSQL 12
 

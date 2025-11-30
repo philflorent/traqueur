@@ -1,5 +1,5 @@
 #!/bin/bash
-#	P.Florent 01/11/2025 - https://pgphil.ovh - Traqueur v9.00.02 pour PostgreSQL 13 => 18
+#	P.Florent 30/11/2025 - https://pgphil.ovh - Traqueur v9.00.03 pour PostgreSQL 13 => 18
 # Copyright (c) 2017-2025, PHILIPPE FLORENT
 # Permission to use, copy, modify, and distribute this software and its documentation for any purpose, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and this paragraph and the following two paragraphs appear in all copies.
 # IN NO EVENT SHALL PHILIPPE FLORENT BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF PHILIPPE FLORENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -7,7 +7,7 @@
 
 umask 077
 
-declare version="9.00.02"
+declare version="9.00.03"
 declare min_pg_version="13"
 declare max_pg_version="18"
 declare OS=`uname`
@@ -448,7 +448,7 @@ del_work_files(){
 }
 
 del_bellard_files(){
-	rm -f ${TRAQUEUR_W}/traqueur_bellard_*_${process_number}.c
+	#rm -f ${TRAQUEUR_W}/traqueur_bellard_*_${process_number}.c
 	rm -f ${TRAQUEUR_W}/traqueur_bellard_*_${process_number}
 }
 
@@ -673,12 +673,8 @@ if [[ ${bellard} -eq 1 ]]; then
 	information "${info_008_bellard}" 
 	
 	# Debut code Fabrice BELLARD
-	declare optimus_prime="int m=1811939329,N=1,t[1<<26]={2},a,*p,i,e=73421233,s,c,U=1;g(d,h){for(i=s;i<1<<"
-	optimus_prime+="25;i*=2)d=d*1LL*d%m;for(p=t;p<t+N;p+=s)for(i=s,c=1;i;i--)a=p[s]*(h?c:1LL)%m,p[s]"
-	optimus_prime+="=(m*1U+*p-a)*(h?1LL:c)%m,*p=(a*1U+*p)%m,p++,c=c*1LL*d%m;}main(){while(e/=2){N*=2"
-	optimus_prime+=";U=U*1LL*(m+1)/2%m;for(s=N;s/=2;)g(136,0);for(p=t;p<t+N;p++)*p=*p*1LL**p%m*U%m;"
-	optimus_prime+="for(s=1;s<N;s*=2)g(839354248,1);for(a=0,p=t;p<t+N;)a+=*p<<(e&1),*p++=a%10,a/=10;"
-	optimus_prime+="}while(!*--p);for(t[0]--;p>=t;)putchar(48+*p--);}" 
+	declare optimus_prime="#include <stdio.h>
+    int m=1811939329,N=1,t[1<<26]={2},a,*p,i,e=73421233,s,c,U=1;int g(int d,int h){for(i=s;i<1<<25;i*=2)d=d*1LL*d%m;for(p=t;p<t+N;p+=s)for(i=s,c=1;i;i--)a=p[s]*(h?c:1LL)%m,p[s]=(m*1U+*p-a)*(h?1LL:c)%m,*p=(a*1U+*p)%m,p++,c=c*1LL*d%m;}int main(){while(e/=2){N*=2;U=U*1LL*(m+1)/2%m;for(s=N;s/=2;)g(136,0);for(p=t;p<t+N;p++)*p=*p*1LL**p%m*U%m;for(s=1;s<N;s*=2)g(839354248,1);for(a=0,p=t;p<t+N;)a+=*p<<(e&1),*p++=a%10,a/=10;}while(!*--p);for(t[0]--;p>=t;)putchar(48+*p--);}"
 	# Fin code Fabrice BELLARD
 	
 	case ${OS} in
@@ -696,7 +692,7 @@ if [[ ${bellard} -eq 1 ]]; then
 			;;	
 	esac	
 	declare debut_bellard=`date +%s`
-	echo ${optimus_prime} > ${TRAQUEUR_W}/traqueur_bellard_optimus_prime_${process_number}.c
+	echo "${optimus_prime}" > ${TRAQUEUR_W}/traqueur_bellard_optimus_prime_${process_number}.c
 	if [[ `${compilateur} ${TRAQUEUR_W}/traqueur_bellard_optimus_prime_${process_number}.c -o ${TRAQUEUR_W}/traqueur_bellard_optimus_prime_${process_number} && ${TRAQUEUR_W}/traqueur_bellard_optimus_prime_${process_number}` == *"217671164956287190498687010073391086436351" ]]; then
 		declare fin_bellard=`date +%s`	
 		let bellard_score=${fin_bellard}-${debut_bellard}
